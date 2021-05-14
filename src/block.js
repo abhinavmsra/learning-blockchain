@@ -60,18 +60,16 @@ class Block {
      *     or Reject with an error.
      */
     getBData() {
-        // Getting the encoded data saved in the Block
-        // Decoding the data to retrieve the JSON representation of the object
-        // Parse the data to an object to be retrieve.
-        let decodedBData = JSON.parse(hex2ascii(this.body));
+        let self = this;
 
         // Resolve with the data if the object isn't the Genesis block
         return new Promise((resolve, reject) => {
-            if((typeof decodedBData != 'object') || (decodedBData['star'] === undefined)) {
-                resolve(null);
-            }
-    
-            resolve(decodedBData);
+            // Getting the encoded data saved in the Block
+            // Decoding the data to retrieve the JSON representation of the object
+            // Parse the data to an object to be retrieve.
+            let decodedBData = JSON.parse(hex2ascii(self.body));
+
+            (self.height === 0) ? resolve(null) : resolve(decodedBData);
         })
     }
 }

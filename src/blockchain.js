@@ -125,7 +125,7 @@ class Blockchain {
                 reject('Message could not be verified');
             }
 
-            let block = new BlockClass.Block({star: star, owner: address});
+            let block = new BlockClass.Block({ owner: address, star: star });
             resolve(this._addBlock(block));
         });
     }
