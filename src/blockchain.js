@@ -113,19 +113,24 @@ class Blockchain {
      */
     submitStar(address, message, signature, star) {
         let self = this;
+
         return new Promise(async (resolve, reject) => {
             let messageTimestamp = parseInt(message.split(':')[1]);
             let currentTime = parseInt(self._currentTimestamp());
 
             if((currentTime - messageTimestamp) >= 5*60) {
-                reject('Time elapsed is more than 5 minutes');
+                return reject('Time elapsed is more than 5 minutes');
             }
 
-            if(!bitcoinMessage.verify(message, address, signature)) {
-                reject('Message could not be verified');
+            try {
+                if(!bitcoinMessage.verify(message, address, signature)) {
+                    return reject('Message could not be verified');
+                }
+            } catch(e) {
+                return reject(`Message could not be verified due to ${e}`);
             }
 
-            let block = new BlockClass.Block({ owner: address, star: star });
+            let block = new BlockClass.Block({owner: address, star: star});
             resolve(this._addBlock(block));
         });
     }
@@ -168,7 +173,7 @@ class Blockchain {
         let self = this;
         let stars = [];
         return new Promise((resolve, reject) => {
-            self.chain.forEach(async function(block) {
+            self.chain.forEach(async (block) => {
                 const bData = await block.getBData();
                 if (bData && bData.owner === address) {
                     stars.push(bData);
